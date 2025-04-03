@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
@@ -29,12 +28,9 @@ func main() {
 	// Create router
 	r := gin.Default()
 
-	// Get the absolute path to the web directory
-	webDir := "/web/" // Default path when running from project root
-
 	// Serve static files
-	r.Static("/static", filepath.Join(webDir, "static"))
-	r.LoadHTMLGlob(filepath.Join(webDir, "templates/**/*"))
+	r.Static("/static", "./web/static")
+	r.LoadHTMLGlob("./web/templates/**/*")
 
 	// Initialize repositories
 	noteRepo := repositories.NewNoteRepository(db)
