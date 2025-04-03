@@ -1,0 +1,62 @@
+{{ define "content" }}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Create New Note</h1>
+    <a href="/notes" class="btn btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+        </svg>
+        Back to Notes
+    </a>
+</div>
+
+<div class="card bg-base-100 shadow-xl max-w-2xl mx-auto">
+    <div class="card-body">
+        <form x-data="{ 
+                title: '', 
+                content: '',
+                errors: {},
+                validate() {
+                    this.errors = {};
+                    if (!this.title.trim()) {
+                        this.errors.title = 'Title is required';
+                    }
+                    return Object.keys(this.errors).length === 0;
+                },
+                reset() {
+                    this.title = '';
+                    this.content = '';
+                    this.errors = {};
+                }
+            }" hx-post="/notes" hx-target="#notes-container" hx-swap="afterbegin"
+            @submit="if (!validate()) { $event.preventDefault(); }">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Title</span>
+                </label>
+                <input type="text" name="title" x-model="title" placeholder="Note title" class="input input-bordered"
+                    :class="{ 'input-error': errors.title }" />
+                <span x-show="errors.title" x-text="errors.title" class="text-error text-sm mt-1"></span>
+            </div>
+
+            <div class="form-control mt-4">
+                <label class="label">
+                    <span class="label-text">Content</span>
+                </label>
+                <textarea name="content" x-model="content" placeholder="Note content"
+                    class="textarea textarea-bordered h-64"></textarea>
+            </div>
+
+            <div class="form-control mt-6">
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Note
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{ end }}
