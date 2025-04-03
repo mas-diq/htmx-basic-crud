@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
@@ -28,9 +29,12 @@ func main() {
 	// Create router
 	r := gin.Default()
 
+	// Get the absolute path to the web directory
+	webDir := "/web/" // Default path when running from project root
+
 	// Serve static files
-	r.Static("/static", "./web/static")
-	r.LoadHTMLGlob("../../web/templates/**/*")
+	r.Static("/static", filepath.Join(webDir, "static"))
+	r.LoadHTMLGlob(filepath.Join(webDir, "templates/**/*"))
 
 	// Initialize repositories
 	noteRepo := repositories.NewNoteRepository(db)
@@ -52,6 +56,7 @@ func main() {
 	r.DELETE("/notes/:id", noteHandler.Delete)
 
 	// Start server
+	log.Println("Server starting on :8080...")
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
